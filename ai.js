@@ -1,51 +1,63 @@
-(function(){
-  const norm = s => s.toLowerCase().replace(/[\u064B-\u0652]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
+(function () {
+  // ضع هنا رابط Cloudflare Worker بعد إنشائه
+  const WORKER_URL = 'PUT_YOUR_WORKER_URL_HERE';
 
-  // ردود محلية احتياطية، تعمل عند فشل الخدمة الخارجية
-  function localReply(t){
-    const q = norm(t);
-    const has = (...w) => w.some(x => q.includes(norm(x)));
-    if(/^[\d+\-*\/.()\s×÷]+$/.test(t)){
-      try{ return 'النتيجة: ' + Function('"use strict";return ('+t.replace(/×/g,'*').replace(/÷/g,'/')+')')() + ' 🧮'; }catch(e){}
-    }
-    if(has('الساعه','الوقت')) return 'الوقت الآن: ' + new Date().toLocaleTimeString('ar');
-    if(has('التاريخ','اليوم')) return 'اليوم: ' + new Date().toLocaleDateString('ar',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    return 'تعذّر الاتصال بخدمة الذكاء الاصطناعي حالياً. جرّب مرة أخرى لاحقاً، أو اسألني عن الوقت أو عملية حسابية.';
-  }
-
-  async function askAI(t, signal){
-    const prompt = 'أنت Sturix AI، مساعد ذكي ودود. أجب بالعربية بإيجاز ووضوح.\n\nالسؤال: ' + t;
-    const r = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt), { signal });
-    if(!r.ok) throw new Error('HTTP ' + r.status);
-    return (await r.text()).trim();
-  }
-
-  function addMsg(box, txt, me){
+  function bubble(text, cls) {
+    const box = document.getElementById('cbox');
     const d = document.createElement('div');
-    d.style.cssText = 'padding:8px 12px;border-radius:8px;max-width:85%;margin:4px 0;color:' + (me ? '#fff;background:#1a2a42;align-self:flex-end' : '#00f2fe;background:#111d2e;align-self:flex-start');
-    d.textContent = txt;
+    d.className = 'bub ' + cls;
+    d.textContent = text;
     box.appendChild(d);
     box.scrollTop = box.scrollHeight;
     return d;
   }
 
-  window.smsg = async function(){
-    const i = document.getElementById('cinput'), b = document.getElementById('cbox');
-    if(!i || !i.value.trim()) return;
-    const t = i.value.trim();
-    i.value = '';
-    addMsg(b, t, true);
-    const w = addMsg(b, 'يكتب...', false);
-
-    const ctl = new AbortController();
-    const to = setTimeout(() => ctl.abort(), 25000);
-    try{
-      w.textContent = (await askAI(t, ctl.signal)) || localReply(t);
-    }catch(e){
-      w.textContent = localReply(t);
-    }finally{
-      clearTimeout(to);
-      b.scrollTop = b.scrollHeight;
+  function localReply(t) {
+    const q = t.trim();
+    if (/^[0-9+\-*\/.() ×÷]+$/.test(q)) {
+      try {
+        const s = q.replace(/×/g, '*').replace(/÷/g, '/');
+        return 'النتيجة: ' + Function('"use strict";return (' + s + ')')();
+      } catch (e) {}
     }
+    if (q.includes('الساعة') || q.includes('الوقت')) return 'الوقت الآن: ' + new Date().toLocaleTimeString('ar');
+    if (q.includes('التاريخ') || q.includes('اليوم')) return 'اليوم: ' + new Date().toLocaleDateString('ar', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    if (q.includes('مرحبا') || q.includes('السلام')) return 'وعليكم السلام ورحمة الله! كيف أساعدك؟';
+    return 'لا أستطيع الإجابة عن هذا الآن، لأن خدمة الذكاء الاصطناعي غير متصلة. جرّب لاحقاً، أو اسألني عن الوقت أو عملية حسابية.';
+  }
+
+  async function ask(question) {
+    if (WORKER_URL.startsWith('PUT_')) throw new Error('no worker');
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 25000);
+    try {
+      const r = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+        signal: ctl.signal
+      });
+      const d = await r.json();
+      if (!r.ok || !d.answer) throw new Error('bad response');
+      return d.answer;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  window.smsg = async function () {
+    const input = document.getElementById('cinput');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    bubble(text, 'me');
+    const wait = bubble('يكتب...', 'bot');
+    try {
+      wait.textContent = await ask(text);
+    } catch (e) {
+      wait.textContent = localReply(text);
+    }
+    document.getElementById('cbox').scrollTop = document.getElementById('cbox').scrollHeight;
   };
 })();

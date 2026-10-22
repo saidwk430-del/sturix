@@ -1,712 +1,324 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sturix - صندوق الأدوات الأسطوري</title>
-    <style>
-        :root {
-            --bg-color: #030712;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-        }
-
-        * {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-            box-sizing: border-box;
-        }
-
-        input, textarea {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-
-        body {
-            font-family: 'Tahoma', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .icon-btn {
-            background: #0f172a;
-            border: 1.5px solid rgba(0, 242, 254, 0.4);
-            color: #00f2fe;
-            font-size: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-        }
-
-        header h1 {
-            font-size: 36px;
-            margin: 0;
-            background: linear-gradient(90deg, #00f2fe, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
-        }
-
-        header p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin: 6px 0 0 0;
-        }
-
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px 14px;
-            width: 100%;
-            padding: 4px 0 32px;
-        }
-
-        .tool-card {
-            --neon: #00c8ff;
-            --glow: rgba(0, 160, 255, .34);
-            background:
-                radial-gradient(ellipse at 15% 100%, var(--glow), transparent 58%),
-                linear-gradient(145deg, #071a35 0%, #080d20 55%, #10091e 100%);
-            border: 1.5px solid var(--neon);
-            border-radius: 25px;
-            padding: 20px 15px 18px;
-            min-width: 0;
-            min-height: 196px;
-            text-align: right;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 17px;
-            box-shadow:
-                0 0 10px var(--glow),
-                0 0 24px var(--glow),
-                inset 0 0 18px rgba(30, 100, 255, .09);
-            transition: transform .18s ease, filter .18s ease;
-        }
-
-        .tool-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,.13),
-                transparent 24%,
-                transparent 72%,
-                var(--glow)
-            );
-        }
-
-        .tool-card:active {
-            transform: scale(.97);
-            filter: brightness(1.25);
-        }
-
-        .card-red {
-            --neon: #ff376d;
-            --glow: rgba(255, 30, 95, .32);
-        }
-
-        .card-blue {
-            --neon: #168bff;
-            --glow: rgba(0, 105, 255, .32);
-        }
-
-        .card-purple {
-            --neon: #a735ff;
-            --glow: rgba(157, 35, 255, .34);
-        }
-
-        .card-orange {
-            --neon: #ff9d22;
-            --glow: rgba(255, 132, 0, .34);
-        }
-
-        .card-pink {
-            --neon: #ff24b8;
-            --glow: rgba(255, 20, 170, .32);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            margin: 0;
-            direction: ltr;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tool-icon-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 76px;
-            height: 76px;
-            flex-shrink: 0;
-            font-size: 52px;
-            overflow: visible;
-            filter: drop-shadow(0 0 10px var(--glow));
-        }
-
-        .tool-icon-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 13px;
-        }
-
-        .arrow-btn {
-            width: 42px;
-            height: 42px;
-            flex-shrink: 0;
-            background: linear-gradient(145deg, rgba(255,255,255,.13), rgba(0,0,0,.3));
-            border: 1.5px solid var(--neon, #168bff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 25px;
-            line-height: 1;
-            box-shadow: 0 0 13px var(--glow, rgba(0,140,255,.4)),
-                        inset 0 0 8px var(--glow, rgba(0,140,255,.2));
-        }
-
-        .tool-card > div:last-child {
-            position: relative;
-            z-index: 1;
-        }
-
-        .tool-title {
-            font-size: clamp(15px, 4vw, 19px);
-            line-height: 1.5;
-            font-weight: 900;
-            color: #fff;
-            margin: 0 0 7px;
-            text-shadow: 0 0 10px rgba(255,255,255,.12);
-        }
-
-        .tool-desc {
-            font-size: 12px;
-            line-height: 1.7;
-            color: #77baff;
-            margin: 0;
-        }
-
-        .ai-banner {
-            --neon: #ff247b;
-            --glow: rgba(255, 20, 110, .34);
-            grid-column: span 2;
-            background:
-                radial-gradient(ellipse at 10% 100%, var(--glow), transparent 65%),
-                linear-gradient(145deg, #10112a, #080d20);
-            border: 1.5px solid var(--neon);
-            border-radius: 25px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            cursor: pointer;
-            box-shadow: 0 0 18px var(--glow),
-                        inset 0 0 16px rgba(255,255,255,.035);
-        }
-
-        .ai-banner .arrow-btn {
-            color: #fff;
-            border-color: var(--neon);
-            box-shadow: 0 0 13px var(--glow);
-        }
-
-        @media (max-width: 360px) {
-            .tools-grid { gap: 12px 10px; }
-            .tool-card { min-height: 176px; padding: 15px 11px; }
-            .tool-icon-box { width: 60px; height: 60px; font-size: 43px; }
-            .arrow-btn { width: 35px; height: 35px; }
-            .tool-title { font-size: 14px; }
-            .tool-desc { font-size: 11px; }
-        }
-
-        #tool-view {
-            display: none;
-            width: 100%;
-            max-width: 480px;
-            background: #090e1a;
-            border-radius: 20px;
-            padding: 22px;
-            border: 1.5px solid #00f2fe;
-            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-        }
-
-        .back-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #00f2fe;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding: 8px 14px;
-            border-radius: 10px;
-        }
-
-        .btn {
-            background: #00f2fe;
-            color: #030712;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #drawer-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.8); z-index: 998; display: none;
-        }
-        #drawer {
-            position: fixed; top: 0; right: -280px; width: 270px; height: 100%;
-            background: #090e1a; border-left: 1.5px solid #00f2fe; z-index: 999;
-            padding: 20px 15px; display: flex; flex-direction: column;
-            justify-content: space-between; transition: right 0.3s ease; overflow-y: auto;
-        }
-        .drawer-item {
-            padding: 9px 10px; border-radius: 8px; color: #fff; font-size: 13px;
-            cursor: pointer; margin-bottom: 3px; display: flex; gap: 10px; align-items: center;
-        }
-        .drawer-item:hover { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
-
-/* Sturix welcome screen */
-#splash-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px;
-    overflow: hidden;
-    text-align: center;
-    background: linear-gradient(rgba(3,7,18,.30), rgba(3,7,18,.58)), url('./images/welcome.jpg') center center / cover no-repeat;
-    transition: opacity .45s ease, visibility .45s ease;
-}
-#splash-screen.splash-hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-.splash-logo {
-    width: 112px;
-    height: 112px;
-    object-fit: contain;
-    padding: 12px;
-    border: 1px solid rgba(0,242,254,.65);
-    border-radius: 30px;
-    background: rgba(8,18,38,.8);
-    box-shadow: 0 0 25px rgba(0,242,254,.28),
-                0 0 60px rgba(168,85,247,.16),
-                inset 0 0 20px rgba(0,242,254,.08);
-    animation: sturix-pulse 2.4s ease-in-out infinite;
-}
-.splash-title {
-    margin: 26px 0 8px;
-    font-size: clamp(38px, 11vw, 54px);
-    font-weight: 900;
-    letter-spacing: 4px;
-    color: #00f2fe;
-    text-shadow: 0 0 12px rgba(0,242,254,.7),
-                 0 0 32px rgba(168,85,247,.45);
-}
-.splash-subtitle {
-    margin: 0;
-    color: #a8b6ce;
-    font-size: 14px;
-    line-height: 1.9;
-}
-.splash-line {
-    width: 100px;
-    height: 3px;
-    margin: 25px 0;
-    border-radius: 9px;
-    background: linear-gradient(90deg,#00f2fe,#a855f7,#ec4899);
-    box-shadow: 0 0 14px rgba(0,242,254,.5);
-}
-#splash-start {
-    width: min(260px, 100%);
-    min-height: 52px;
-    margin-top: 8px;
-    border: 1px solid rgba(0,242,254,.8);
-    border-radius: 16px;
-    color: #030712;
-    background: linear-gradient(100deg,#00f2fe,#a78bfa);
-    box-shadow: 0 0 24px rgba(0,242,254,.22);
-    font: bold 17px Tahoma,sans-serif;
-    cursor: pointer;
-}
-#splash-start:active { transform: scale(.97); }
-.splash-version {
-    position: absolute;
-    bottom: 22px;
-    color: #64748b;
-    font-size: 11px;
-    letter-spacing: 2px;
-}
-@keyframes sturix-pulse {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-7px); }
-}
-@media (prefers-reduced-motion: reduce) {
-    .splash-logo { animation: none; }
-    #splash-screen { transition: none; }
-}
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sturix</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#030712">
+<style>
+:root{--bg:#030712;--cyan:#00f2fe;--muted:#94a3b8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:#fff;font-family:Tahoma,sans-serif;min-height:100vh}
+button,input,select,textarea{font-family:inherit}
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;background:var(--bg) url('./images/welcome.jpg') center/cover no-repeat;transition:opacity .5s}
+#splash::before{content:"";position:absolute;inset:0;background:rgba(3,7,18,.9)}
+#splash>*{position:relative}
+#splash.hide{opacity:0;pointer-events:none}
+.logo{width:112px;height:112px;border-radius:30px;border:1px solid rgba(0,242,254,.6);padding:12px;background:#081226;object-fit:contain}
+.s-title{font-size:48px;font-weight:900;letter-spacing:4px;color:var(--cyan);margin:24px 0 8px;text-shadow:0 0 18px rgba(0,242,254,.6)}
+.s-sub{color:#a8b6ce;font-size:14px;margin:4px 0}
+.start{margin-top:36px;width:min(260px,100%);min-height:52px;border:none;border-radius:16px;background:linear-gradient(100deg,#00f2fe,#a78bfa);color:#030712;font:bold 17px Tahoma;cursor:pointer}
+#home{display:none;max-width:480px;margin:0 auto;padding:16px}
+.brand{display:flex;align-items:center;justify-content:center;gap:10px;font-size:32px;font-weight:900;color:var(--cyan);margin-top:8px}
+.brand img{width:44px;height:44px;border-radius:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.card{min-height:140px;border-radius:22px;padding:16px;cursor:pointer;background:linear-gradient(145deg,#071a35,#080d20);border:1.5px solid var(--c);box-shadow:0 0 14px var(--c);display:flex;flex-direction:column;justify-content:space-between}
+.card .ic{font-size:40px}
+.card b{display:block;font-size:16px;margin-bottom:4px}
+.card small{color:#77baff;font-size:12px}
+.card.wide{grid-column:span 2;flex-direction:row;align-items:center;gap:14px;min-height:90px}
+#tool{display:none;max-width:480px;margin:0 auto;padding:16px}
+.panel{background:#090e1a;border:1.5px solid var(--cyan);border-radius:20px;padding:20px}
+.back{background:#111827;border:1px solid #334155;color:var(--cyan);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:bold;margin-bottom:14px}
+h2{margin:0 0 14px}
+.inp{width:100%;padding:12px;background:#030712;color:#fff;border:1px solid #1e293b;border-radius:10px;font-size:15px;margin-bottom:10px}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--cyan);color:#030712;font-weight:bold;font-size:15px;cursor:pointer;margin-top:4px}
+.muted{color:var(--muted);font-size:13px}
+.res{margin-top:12px;padding:12px;border-radius:10px;background:#030712;color:var(--cyan);min-height:40px;white-space:pre-wrap;word-break:break-word}
+.list{padding:0;margin:14px 0 0;list-style:none}
+.list li{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #1e293b}
+#camBox{display:none;position:fixed;inset:0;z-index:200;background:#000;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+#camVideo{width:100%;max-height:65vh;object-fit:cover;border-radius:16px}
+#camMsg{color:#fff;margin:16px 0;text-align:center;font-size:16px;word-break:break-all}
+.disp{width:100%;height:96px;background:#030712;border:1px solid #1e293b;border-radius:16px;color:var(--cyan);font-size:44px;direction:ltr;padding:0 16px;display:flex;align-items:center;justify-content:flex-end;overflow:hidden;margin-bottom:14px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.keys button{height:76px;border:none;border-radius:16px;background:#1e293b;color:#fff;font-size:28px;cursor:pointer}
+.keys .op{background:#334155;color:var(--cyan)}
+.keys .clr{background:#ef4444}
+.keys .z{grid-column:span 2}
+.keys .eq{background:#f97316;color:#fff}
+.chat{height:300px;overflow-y:auto;background:#030712;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.bub{max-width:85%;padding:9px 12px;border-radius:10px;font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.bot{align-self:flex-start;background:#111d2e;color:var(--cyan)}
+.me{align-self:flex-end;background:#1a2a42;color:#fff}
+.row{display:flex;gap:8px;align-items:center}
+.send{width:46px;height:46px;border:none;border-radius:10px;background:var(--cyan);color:#030712;font-size:18px;cursor:pointer}
 </style>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#0b0b0f">
 </head>
 <body>
 
-<div id="splash-screen">
-    <img class="splash-logo" src="./images/icon.png" alt="Sturix">
-    <h1 class="splash-title">STURIX</h1>
-    <p class="splash-subtitle">صندوق الأدوات الذكي والشامل</p>
-    <div class="splash-line"></div>
-    <p class="splash-subtitle">تقنية متطورة. أدواتك في مكان واحد.</p>
-    <button id="splash-start" type="button"
-        onclick="document.getElementById('splash-screen').classList.add('splash-hidden')">
-        ابدأ الآن&nbsp; ←
-    </button>
-    <div class="splash-version">STURIX • VERSION 1.0.0</div>
+<div id="splash">
+  <img class="logo" src="./images/icon.png" alt="Sturix">
+  <div class="s-title">STURIX</div>
+  <p class="s-sub">صندوق الأدوات الذكي والشامل</p>
+  <p class="s-sub">تقنية متطورة. أدواتك في مكان واحد.</p>
+  <button class="start" onclick="startApp()">ابدأ الآن ←</button>
 </div>
 
+<div id="home">
+  <div class="brand"><img src="./images/icon.png" alt="">Sturix</div>
+  <p class="muted" style="text-align:center;margin:6px 0 0">صندوق الأدوات الذكي والشامل</p>
+  <div class="grid" id="grid"></div>
+</div>
 
-    <div class="container">
-        <div id="home-view" style="width: 100%;">
-            <header>
-                <div class="header-top">
-                    <button class="icon-btn" onclick="toggleDrawer()">☰</button>
-                    <h1 style="display:flex;align-items:center;gap:10px"><img src="./images/icon.png" alt="Sturix" style="width:36px;height:36px;object-fit:contain"><span>Sturix</span></h1>
-                    <button class="icon-btn" style="font-size: 22px;" onclick="alert('النسخة الأسطورية الاحترافية مفعلة 👑')">👑</button>
-                </div>
-                <p>صندوق الأدوات الذكي والشامل</p>
-            </header>
+<div id="tool">
+  <button class="back" onclick="goHome()">← العودة</button>
+  <div class="panel" id="content"></div>
+</div>
 
-            <div class="tools-grid">
-                <div class="tool-card card-red" onclick="openTool('pdf')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📄</span></div>
-                    <div><h3 class="tool-title">صور إلى PDF</h3><p class="tool-desc">تحويل الصور لملف PDF</p></div>
-                </div>
+<div id="camBox">
+  <video id="camVideo" playsinline muted></video>
+  <div id="camMsg"></div>
+  <button class="back" onclick="closeCam()">✕ إغلاق الكاميرا</button>
+</div>
 
-                <div class="tool-card card-blue" onclick="openTool('files')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📁</span></div>
-                    <div><h3 class="tool-title">مدير الملفات</h3><p class="tool-desc">استعراض ملفات الهاتف</p></div>
-                </div>
-
-                <div class="tool-card card-blue" onclick="openTool('qr')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📷</span></div>
-                    <div><h3 class="tool-title">منشئ QR Code</h3><p class="tool-desc">توليد وفحص الباركود</p></div>
-                </div>
-
-                <div class="tool-card card-orange" onclick="openTool('net')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📶</span></div>
-                    <div><h3 class="tool-title">معلومات الشبكة</h3><p class="tool-desc">فحص IP ونوع الاتصال</p></div>
-                </div>
-
-                <div class="tool-card card-purple" onclick="openTool('themes')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🎨</span></div>
-                    <div><h3 class="tool-title">ثيمات التطبيق</h3><p class="tool-desc">تغيير ألوان المظهر</p></div>
-                </div>
-
-                <div class="tool-card card-blue" onclick="openTool('flash')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔦</span></div>
-                    <div><h3 class="tool-title">المصباح اليدوي</h3><p class="tool-desc">فلاش الكاميرا الحقيقي</p></div>
-                </div>
-
-                <div class="tool-card card-blue" onclick="openTool('todo')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📝</span></div>
-                    <div><h3 class="tool-title">قائمة المهام</h3><p class="tool-desc">تنظيم المهام اليومية</p></div>
-                </div>
-
-                <div class="tool-card card-orange" onclick="openTool('pass')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔐</span></div>
-                    <div><h3 class="tool-title">كلمات المرور</h3><p class="tool-desc">كلمات مرور قوية وآمنة</p></div>
-                </div>
-
-                <div class="tool-card card-purple" onclick="openTool('notes')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📓</span></div>
-                    <div><h3 class="tool-title">ملاحظات سريعة</h3><p class="tool-desc">حفظ الأفكار محلياً</p></div>
-                </div>
-
-                <div class="tool-card card-pink" onclick="openTool('calc')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🧮</span></div>
-                    <div><h3 class="tool-title">الآلة الحاسبة</h3><p class="tool-desc">حسابات دقيقة وفورية</p></div>
-                </div>
-
-                <div class="tool-card card-blue" onclick="openTool('speed')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🌐</span></div>
-                    <div><h3 class="tool-title">سرعة الإنترنت</h3><p class="tool-desc">اختبار سرعة الاتصال</p></div>
-                </div>
-
-                <div class="tool-card card-purple" onclick="openTool('dev')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔢</span></div>
-                    <div><h3 class="tool-title">أدوات المطورين</h3><p class="tool-desc">JSON و Base64</p></div>
-                </div>
-
-                <div class="tool-card card-blue" onclick="openTool('scan')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🛡️</span></div>
-                    <div><h3 class="tool-title">فاحص الروابط</h3><p class="tool-desc">فحص أمان الروابط</p></div>
-                </div>
-
-                <div class="tool-card card-purple" onclick="openTool('trans')">
-                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🌍</span></div>
-                    <div><h3 class="tool-title">مترجم النصوص</h3><p class="tool-desc">ترجمة فورية للكلمات</p></div>
-                </div>
-
-                <div class="ai-banner" onclick="openTool('ai')">
-                    <div style="display: flex; align-items: center; gap: 14px;">
-                        <span style="font-size: 36px;">🤖</span>
-                        <div>
-                            <h3 class="tool-title" style="margin-bottom: 2px; font-size: 16px; color: #fff;">Sturix AI</h3>
-                            <p class="tool-desc" style="color: #cbd5e1;">مساعد الذكاء الاصطناعي للاستفسار الفوري</p>
-                        </div>
-                    </div>
-                    <div class="arrow-btn">➜</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tool-view">
-            <button class="back-btn" onclick="goHome()">← العودة</button>
-            <div id="content"></div>
-        </div>
-    </div>
-
-    <!-- القائمة الجانبية بالترتيب المطلوب -->
-    <div id="drawer-overlay" onclick="toggleDrawer()"></div>
-    <div id="drawer">
-        <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px; margin-bottom:10px;">
-                <h3 style="margin:0; color:#00f2fe;">Sturix</h3>
-                <button onclick="toggleDrawer()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
-            </div>
-
-            <div class="drawer-item" onclick="toggleDrawer(); goHome();"><span>🏠</span> الرئيسية</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('لا توجد إشعارات جديدة حالياً');"><span>🔔</span> الإشعارات</div>
-            <div class="drawer-item" onclick="toggleDrawer(); openTool('ai');"><span>🤖</span> مساعد الذكاء الاصطناعي</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('قائمة الأدوات المفضلة فارغة حالياً');"><span>⭐</span> المفضلة</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('سجل الاستخدام فارغ');"><span>🕘</span> سجل الاستخدام</div>
-            <div class="drawer-item" onclick="toggleDrawer(); openTool('themes');"><span>🎨</span> تخصيص الواجهة</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('اللغة الحالية: العربية');"><span>🌐</span> لغة التطبيق</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('النظام محمي وآمن 100%');"><span>🛡️</span> الخصوصية والأمان</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('أنت تستخدم النسخة الأسطورية الكاملة!');"><span>👑</span> Sturix Premium</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('شكراً لمقترحك! أرسل فكرتك عبر البريد.');"><span>💡</span> اقتراح ميزة جديدة</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('شكراً لتقييمك الرائع لـ Sturix ⭐');"><span>⭐</span> تقييم التطبيق</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('تم نسخ رابط التطبيق بنجاح!');"><span>📤</span> مشاركة التطبيق</div>
-            <div class="drawer-item" onclick="toggleDrawer(); alert('تطبيق Sturix النسخة الأسطورية الشاملة 2026.');"><span>ℹ️</span> حول التطبيق</div>
-        </div>
-
-        <div style="text-align:center; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-            Sturix &bull; الإصدار 1.0.0
-        </div>
-    </div>
-
-    <script>
-        function toggleDrawer() {
-            let d = document.getElementById('drawer');
-            let o = document.getElementById('drawer-overlay');
-            if(d.style.right === '0px') {
-                d.style.right = '-280px';
-                o.style.display = 'none';
-            } else {
-                o.style.display = 'block';
-                d.style.right = '0px';
-            }
-        }
-
-        function openTool(name) {
-            document.getElementById('home-view').style.display = 'none';
-            let v = document.getElementById('tool-view');
-            let c = document.getElementById('content');
-            v.style.display = 'block';
-
-            if(name === 'pdf') {
-                c.innerHTML = '<h2>صور إلى PDF</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">اختر صورة لتجهيزها في مستند PDF</p><input type="file" accept="image/*" style="width:100%; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="alert(\'تم تجهيز الصورة بنجاح!\')">تحويل الآن</button>';
-            } else if(name === 'files') {
-                c.innerHTML = `<h2>مدير الملفات</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">استعرض ملفات هاتفك المحلية:</p><input type="file" multiple style="width:100%; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;">`;
-            } else if(name === 'qr') {
-                c.innerHTML = `<h2>منشئ QR Code</h2><input type="text" id="qval" placeholder="اكتب النص هنا..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="document.getElementById(\'qres\').innerText=\'تم التوليد: \'+document.getElementById(\'qval\').value">إنشاء</button><p id="qres" style="color:#00f2fe; margin-top:10px;"></p><hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;"><p style="font-size:13px;">فحص الباركود بالكاميرا:</p><input type="file" accept="image/*" capture="environment" style="width:100%; color:#fff;" onchange="alert('تم فحص الكود بنجاح! ✅')">`;
-            } else if(name === 'net') {
-                c.innerHTML = '<h2>معلومات الشبكة</h2><p>عنوان IP: <span style="color:#00f2fe;">127.0.0.1</span></p><p>الحالة: <span style="color:#22c55e;">متصل (Port 4000)</span></p>';
-            } else if(name === 'themes') {
-                c.innerHTML = '<h2>ثيمات التطبيق</h2><p style="color:var(--text-secondary);">الثيم النيون الفاخر مفعل حالياً.</p>';
-            } else if(name === 'flash') {
-                c.innerHTML = `<h2>المصباح اليدوي</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">تشغيل فلاش الكاميرا الحقيقي:</p><button class="btn" id="flash-btn" onclick="toggleFlash()">تشغيل الفلاش</button>`;
-            } else if(name === 'todo') {
-                c.innerHTML = '<h2>قائمة المهام</h2><input type="text" placeholder="مهمة جديدة..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="alert(\'تمت الإضافة!\')">إضافة</button>';
-            } else if(name === 'pass') {
-                c.innerHTML = '<h2>مولد كلمات المرور</h2><input type="text" id="pval" readonly style="width:100%; padding:10px; background:#030712; color:#00f2fe; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="genPass()">توليد</button>';
-                genPass();
-            } else if(name === 'notes') {
-                c.innerHTML = '<h2>ملاحظات سريعة</h2><textarea placeholder="اكتب ملاحظتك..." style="width:100%; height:80px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea><button class="btn" onclick="alert(\'تم الحفظ!\')">حفظ</button>';
-            } else if(name === 'calc') {
-                c.innerHTML = `<h2>الآلة الحاسبة</h2>
-                <input type="text" id="cs" readonly style="width:100%; height:45px; font-size:22px; text-align:right; background:#030712; color:#00f2fe; margin-bottom:10px; padding:0 10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px;" value="0">
-                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('7')">7</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('8')">8</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('9')">9</button>
-                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('/')">÷</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('4')">4</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('5')">5</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('6')">6</button>
-                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('*')">×</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('1')">1</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('2')">2</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('3')">3</button>
-                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('-')">-</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('0')">0</button>
-                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('.')">.</button>
-                    <button class="btn" style="margin:0; background:#ef4444; color:#fff;" onclick="cclear()">C</button>
-                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('+')">+</button>
-                </div>
-                <button class="btn" style="margin-top:8px; background:#ec4899; color:#fff;" onclick="cres()">=</button>`;
-            } else if(name === 'speed') {
-                c.innerHTML = '<h2>سرعة الإنترنت</h2><button class="btn" onclick="this.innerText=\'السرعة الحالية: 48.2 Mbps 🚀\'">بدء الاختبار</button>';
-            } else if(name === 'dev') {
-                c.innerHTML = '<h2>أدوات المطورين</h2><textarea placeholder="النص..." style="width:100%; height:60px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea><button class="btn" onclick="alert(\'تم التشفير بنجاح!\')">تنفيذ</button>';
-            } else if(name === 'scan') {
-                c.innerHTML = '<h2>فاحص الروابط</h2><input type="text" placeholder="https://..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" style="background:#22c55e; color:#000;" onclick="alert(\'الرابط آمن ومحمي ✅\')">فحص</button>';
-            } else if(name === 'trans') {
-                c.innerHTML = `<h2>مترجم النصوص</h2>
-                <textarea id="t-input" placeholder="اكتب النص هنا للترجمة..." style="width:100%; height:60px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea>
-                <button class="btn" onclick="translateText()">ترجمة فورية</button>
-                <div id="t-res" style="margin-top:12px; padding:12px; background:#030712; border-radius:10px; color:#00f2fe; min-height:30px;">النتيجة ستظهر هنا...</div>`;
-            } else if(name === 'ai') {
-                c.innerHTML = `<h2>Sturix AI</h2>
-                <div id="cbox" style="height:160px; background:#030712; border-radius:10px; padding:10px; overflow-y:auto; margin-bottom:10px; font-size:12px; display:flex; flex-direction:column; gap:6px; border:1px solid rgba(255,255,255,0.1);">
-                    <div style="background:#111d2e; padding:8px 12px; border-radius:8px; color:#00f2fe; align-self:flex-start;">مرحباً! أنا مساعدك الذكي Sturix AI، كيف يمكنني مساعدتك اليوم؟</div>
-                </div>
-                <div style="display:flex; gap:6px; align-items:center;">
-                    <input type="text" id="cinput" placeholder="اكتب رسالتك..." style="flex:1; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:8px; outline:none; font-size:13px;" onkeypress="if(event.key==='Enter') smsg()">
-                    <button onclick="smsg()" style="background:#00f2fe; color:#030712; border:none; width:42px; height:42px; border-radius:8px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="إرسال">✈️</button>
-                </div>`;
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function goHome() {
-            document.getElementById('tool-view').style.display = 'none';
-            document.getElementById('home-view').style.display = 'block';
-        }
-
-        let flashTrack = null;
-        async function toggleFlash() {
-            let btn = document.getElementById('flash-btn');
-            try {
-                if (!flashTrack) {
-                    let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    flashTrack = stream.getVideoTracks()[0];
-                    let capabilities = flashTrack.getCapabilities();
-                    if (!capabilities.torch) {
-                        alert('عذراً، فلاش الكاميرا غير مدعوم في هذا المتصفح.');
-                        return;
-                    }
-                    await flashTrack.applyConstraints({ advanced: [{ torch: true }] });
-                    btn.innerText = "إيقاف الفلاش";
-                    btn.style.background = "#ef4444";
-                } else {
-                    await flashTrack.applyConstraints({ advanced: [{ torch: false }] });
-                    flashTrack.stop();
-                    flashTrack = null;
-                    btn.innerText = "تشغيل الفلاش";
-                    btn.style.background = "#00f2fe";
-                }
-            } catch (e) {
-                alert('تعذر الوصول إلى الفلاش: تأكد من إعطاء إذن الكاميرا.');
-            }
-        }
-
-        function genPass() {
-            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$";
-            let p = "";
-            for(let i=0; i<12; i++) p += chars[Math.floor(Math.random() * chars.length)];
-            let el = document.getElementById('pval');
-            if(el) el.value = p;
-        }
-
-        function capp(v) {
-            let s = document.getElementById('cs');
-            if(s) { if(s.value === '0' || s.value === 'خطأ') s.value = v; else s.value += v; }
-        }
-
-        function cclear() { document.getElementById('cs').value = '0'; }
-
-        function cres() {
-            let s = document.getElementById('cs');
-            if(s) { try { s.value = eval(s.value); } catch(e) { s.value = 'خطأ'; } }
-        }
-
-        function translateText() {
-            let txt = document.getElementById('t-input').value.trim();
-            let res = document.getElementById('t-res');
-            if(!txt) { res.innerText = "الرجاء كتابة نص للترجمة"; return; }
-            res.innerText = `الترجمة (إنجليزي): Translated: "${txt}" 🌍`;
-        }
-    </script>
 <script>
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error)); }
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+const TOOLS = [
+  ['pdf','📄','صور إلى PDF','تحويل الصور لملف PDF','#ff376d'],
+  ['files','📁','مدير الملفات','استعراض ملفات الهاتف','#168bff'],
+  ['qr','📷','منشئ QR Code','توليد وفحص الباركود','#168bff'],
+  ['net','📶','معلومات الشبكة','حالة الاتصال ونوعه','#ff9d22'],
+  ['themes','🎨','ثيمات التطبيق','تغيير ألوان المظهر','#a735ff'],
+  ['flash','🔦','المصباح اليدوي','فلاش الكاميرا','#168bff'],
+  ['todo','📝','قائمة المهام','تنظيم المهام اليومية','#168bff'],
+  ['pass','🔐','كلمات المرور','كلمات مرور قوية وآمنة','#ff9d22'],
+  ['notes','📓','ملاحظات سريعة','حفظ الأفكار محلياً','#a735ff'],
+  ['calc','🧮','الآلة الحاسبة','حسابات دقيقة وفورية','#ff24b8'],
+  ['speed','🌐','سرعة الإنترنت','اختبار سرعة الاتصال','#168bff'],
+  ['dev','🔢','أدوات المطورين','JSON و Base64','#a735ff'],
+  ['scan','🛡️','فاحص الروابط','فحص أولي للروابط','#168bff'],
+  ['trans','🌍','مترجم النصوص','ترجمة حقيقية للنصوص','#a735ff'],
+  ['ai','🤖','Sturix AI','مساعد الذكاء الاصطناعي','#ff247b', true]
+];
+
+const KEYS = [['C','⌫','%','÷'],['7','8','9','×'],['4','5','6','−'],['1','2','3','+'],['0','.','=']];
+const OPS = ['÷','×','−','+','%'];
+
+const VIEWS = {
+  pdf: { html: `<h2>صور إلى PDF</h2><p class="muted">التحويل الفعلي إلى PDF قيد التطوير.</p><input type="file" accept="image/*" class="inp">` },
+  files: { html: `<h2>مدير الملفات</h2><input type="file" multiple class="inp" onchange="$('fl').innerHTML=[...this.files].map(f=>'<div>'+esc(f.name)+'</div>').join('')"><div id="fl" class="muted"></div>` },
+  qr: { html: `<h2>منشئ QR Code</h2>
+    <input id="qval" class="inp" placeholder="اكتب النص هنا...">
+    <button class="btn" onclick="$('qres').textContent='النص: '+$('qval').value">إنشاء</button>
+    <div id="qres" class="res"></div>
+    <button class="btn" style="margin-top:16px;background:#111827;color:#00f2fe;border:1px solid #00f2fe" onclick="openCam()">📷 فتح الكاميرا لمسح الكود</button>` },
+  net: { html: `<h2>معلومات الشبكة</h2><p>الحالة: <span id="nOn"></span></p><p>نوع الاتصال: <span id="nType"></span></p>`,
+    init() {
+      $('nOn').textContent = navigator.onLine ? 'متصل' : 'غير متصل';
+      $('nType').textContent = navigator.connection ? navigator.connection.effectiveType : 'غير متاح في هذا المتصفح';
+    } },
+  themes: { html: `<h2>ثيمات التطبيق</h2><p class="muted">الثيم الحالي: النيون. تبديل الثيمات قادم لاحقاً.</p>` },
+  flash: { html: `<h2>المصباح اليدوي</h2><button class="btn" id="flashBtn" onclick="toggleFlash()">تشغيل الفلاش</button>` },
+  todo: { html: `<h2>قائمة المهام</h2>
+    <input id="td" class="inp" placeholder="مهمة جديدة..." onkeydown="if(event.key==='Enter')addTodo()">
+    <button class="btn" onclick="addTodo()">إضافة</button><ul class="list" id="tdl"></ul>`,
+    init: renderTodos },
+  pass: { html: `<h2>مولد كلمات المرور</h2><input id="pval" class="inp" readonly><button class="btn" onclick="genPass()">توليد</button>`,
+    init: genPass },
+  notes: { html: `<h2>ملاحظات سريعة</h2><textarea id="nTxt" class="inp" style="height:140px"></textarea><button class="btn" onclick="saveNote()">حفظ</button><div id="nMsg" class="muted"></div>`,
+    init() { $('nTxt').value = localStorage.getItem('sturix_note') || ''; } },
+  calc: { html: `<h2>الآلة الحاسبة</h2><div class="disp" id="disp">0</div><div class="keys">${calcKeys()}</div>` },
+  speed: { html: `<h2>سرعة الإنترنت</h2><p class="muted">هذه الميزة قيد التطوير حالياً.</p>` },
+  dev: { html: `<h2>أدوات المطورين</h2><textarea id="dIn" class="inp" style="height:110px" placeholder="الصق النص هنا..."></textarea>
+    <div class="row"><button class="btn" onclick="devRun('json')">JSON تنسيق</button><button class="btn" onclick="devRun('enc')">Base64 ترميز</button><button class="btn" onclick="devRun('dec')">Base64 فك</button></div>
+    <div id="dOut" class="res"></div>` },
+  scan: { html: `<h2>فاحص الروابط</h2><input id="sIn" class="inp" placeholder="https://..."><button class="btn" onclick="scanLink()">فحص</button><div id="sOut" class="res"></div>` },
+  trans: { html: `<h2>مترجم النصوص</h2>
+    <select id="tPair" class="inp"><option value="ar|en">العربية ← الإنجليزية</option><option value="en|ar">الإنجليزية ← العربية</option><option value="ar|fr">العربية ← الفرنسية</option></select>
+    <textarea id="tIn" class="inp" style="height:110px" placeholder="اكتب النص هنا..."></textarea>
+    <button class="btn" onclick="translate()">ترجمة</button><div id="tOut" class="res"></div>` },
+  ai: { html: `<h2>Sturix AI</h2>
+    <div id="cbox" class="chat"><div class="bub bot">مرحباً! أنا Sturix AI، كيف أساعدك؟</div></div>
+    <div class="row"><input id="cinput" class="inp" style="margin:0;flex:1" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')smsg()"><button class="send" onclick="smsg()">➤</button></div>` }
+};
+
+function calcKeys() {
+  return KEYS.map(row => row.map(k => {
+    let c = '';
+    if (k === '0') c += ' z';
+    if (k === '=') c += ' eq';
+    if (OPS.includes(k)) c += ' op';
+    if (k === 'C' || k === '⌫') c += ' clr';
+    return `<button class="${c.trim()}" onclick="ck('${k}')">${k}</button>`;
+  }).join('')).join('');
+}
+
+function ck(k) {
+  if (k === 'C') cexpr = '';
+  else if (k === '⌫') cexpr = cexpr.slice(0, -1);
+  else if (k === '=') {
+    try {
+      const s = cexpr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/%/g,'/100');
+      if (!/^[0-9+\-*\/.() ]+$/.test(s)) throw 0;
+      const r = Function('"use strict";return (' + s + ')')();
+      cexpr = Number.isFinite(r) ? String(Math.round(r * 1e10) / 1e10) : 'خطأ';
+    } catch (e) { cexpr = 'خطأ'; }
+  } else {
+    if (cexpr === 'خطأ') cexpr = '';
+    cexpr += k;
+  }
+  $('disp').textContent = cexpr || '0';
+}
+let cexpr = '';
+
+let todos = [];
+function addTodo() {
+  const v = $('td').value.trim();
+  if (!v) return;
+  todos.unshift({ t: v, d: false });
+  $('td').value = '';
+  renderTodos();
+}
+function renderTodos() {
+  $('tdl').innerHTML = todos.map((x, i) =>
+    `<li><span onclick="todos[${i}].d=!todos[${i}].d;renderTodos()" style="flex:1;cursor:pointer;${x.d ? 'text-decoration:line-through;color:#94a3b8' : ''}">${esc(x.t)}</span><button onclick="todos.splice(${i},1);renderTodos()" style="background:none;border:none;color:#f87171;font-size:18px">✕</button></li>`
+  ).join('');
+}
+
+function genPass() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#$%';
+  const a = new Uint32Array(16);
+  crypto.getRandomValues(a);
+  $('pval').value = Array.from(a, x => c[x % c.length]).join('');
+}
+
+function saveNote() {
+  try { localStorage.setItem('sturix_note', $('nTxt').value); $('nMsg').textContent = 'تم الحفظ'; }
+  catch (e) { $('nMsg').textContent = 'تعذر الحفظ'; }
+}
+
+function devRun(m) {
+  const t = $('dIn').value;
+  let o;
+  try {
+    if (m === 'json') o = JSON.stringify(JSON.parse(t), null, 2);
+    else if (m === 'enc') o = btoa(unescape(encodeURIComponent(t)));
+    else o = decodeURIComponent(escape(atob(t.trim())));
+  } catch (e) { o = 'خطأ: المدخل غير صالح'; }
+  $('dOut').textContent = o;
+}
+
+function scanLink() {
+  let m;
+  try {
+    const u = new URL($('sIn').value.trim());
+    m = u.protocol !== 'https:' ? 'تحذير: الرابط غير مشفّر (http)' : 'الصيغة سليمة ويستخدم https. هذا فحص أولي فقط ولا يضمن الأمان الكامل.';
+  } catch (e) { m = 'الرابط غير صالح، تأكد من كتابة https://'; }
+  $('sOut').textContent = m;
+}
+
+async function translate() {
+  const txt = $('tIn').value.trim();
+  const out = $('tOut');
+  if (!txt) { out.textContent = 'الرجاء كتابة نص للترجمة'; return; }
+  out.textContent = 'جارٍ الترجمة...';
+  try {
+    const r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(txt) + '&langpair=' + $('tPair').value);
+    const d = await r.json();
+    out.textContent = (d.responseData && d.responseData.translatedText) || 'تعذرت الترجمة';
+  } catch (e) {
+    out.textContent = 'تعذر الاتصال بخدمة الترجمة، تحقق من الإنترنت';
+  }
+}
+
+let camStream = null, camTimer = null;
+async function openCam() {
+  const box = $('camBox'), v = $('camVideo'), msg = $('camMsg');
+  box.style.display = 'flex';
+  msg.textContent = 'جارٍ فتح الكاميرا...';
+  if (!('BarcodeDetector' in window)) {
+    msg.textContent = 'متصفحك لا يدعم المسح المباشر. استخدم Chrome محدّثاً.';
+    return;
+  }
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    v.srcObject = camStream;
+    await v.play();
+    msg.textContent = 'وجّه الكاميرا نحو الكود...';
+    const det = new BarcodeDetector({ formats: ['qr_code'] });
+    camTimer = setInterval(async () => {
+      try {
+        const codes = await det.detect(v);
+        if (codes.length) {
+          clearInterval(camTimer);
+          msg.textContent = 'النتيجة: ' + codes[0].rawValue;
+        }
+      } catch (e) {}
+    }, 300);
+  } catch (e) {
+    msg.textContent = 'تعذر فتح الكاميرا، تأكد من السماح بالإذن.';
+  }
+}
+function closeCam() {
+  clearInterval(camTimer);
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  $('camVideo').srcObject = null;
+  $('camBox').style.display = 'none';
+}
+
+let flashTrack = null;
+async function toggleFlash() {
+  const b = $('flashBtn');
+  try {
+    if (!flashTrack) {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      flashTrack = s.getVideoTracks()[0];
+      if (!flashTrack.getCapabilities().torch) {
+        alert('فلاش الكاميرا غير مدعوم في هذا الجهاز');
+        flashTrack.stop(); flashTrack = null; return;
+      }
+      await flashTrack.applyConstraints({ advanced: [{ torch: true }] });
+      b.textContent = 'إيقاف الفلاش';
+      b.style.background = '#ef4444';
+    } else {
+      flashTrack.stop(); flashTrack = null;
+      b.textContent = 'تشغيل الفلاش';
+      b.style.background = '';
+    }
+  } catch (e) { alert('تعذر الوصول إلى الفلاش، تأكد من إذن الكاميرا'); }
+}
+
+function startApp() {
+  $('splash').classList.add('hide');
+  $('home').style.display = 'block';
+}
+
+function openTool(n) {
+  closeCam();
+  $('home').style.display = 'none';
+  $('tool').style.display = 'block';
+  $('content').innerHTML = VIEWS[n].html;
+  if (VIEWS[n].init) VIEWS[n].init();
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  closeCam();
+  $('tool').style.display = 'none';
+  $('home').style.display = 'block';
+}
+
+$('grid').innerHTML = TOOLS.map(t =>
+  `<div class="card ${t[5] ? 'wide' : ''}" style="--c:${t[4]}" onclick="openTool('${t[0]}')"><span class="ic">${t[1]}</span><div><b>${t[2]}</b><small>${t[3]}</small></div></div>`
+).join('');
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+}
 </script>
 <script src="./ai.js"></script>
 </body>
