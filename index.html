@@ -326,7 +326,7 @@
             cursor: pointer; margin-bottom: 3px; display: flex; gap: 10px; align-items: center;
         }
         .drawer-item:hover { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
-    
+
 /* Sturix welcome screen */
 #splash-screen {
     position: fixed;
@@ -541,7 +541,7 @@
                 <h3 style="margin:0; color:#00f2fe;">Sturix</h3>
                 <button onclick="toggleDrawer()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
             </div>
-            
+
             <div class="drawer-item" onclick="toggleDrawer(); goHome();"><span>🏠</span> الرئيسية</div>
             <div class="drawer-item" onclick="toggleDrawer(); alert('لا توجد إشعارات جديدة حالياً');"><span>🔔</span> الإشعارات</div>
             <div class="drawer-item" onclick="toggleDrawer(); openTool('ai');"><span>🤖</span> مساعد الذكاء الاصطناعي</div>
@@ -704,33 +704,10 @@
             if(!txt) { res.innerText = "الرجاء كتابة نص للترجمة"; return; }
             res.innerText = `الترجمة (إنجليزي): Translated: "${txt}" 🌍`;
         }
-
-        function smsg() {
-            let i = document.getElementById('cinput');
-            let b = document.getElementById('cbox');
-            if(!i || !i.value.trim()) return;
-            let text = i.value.trim();
-            
-            b.innerHTML += `<div style="background:#1a2a42; padding:8px 12px; border-radius:8px; color:#fff; align-self:flex-end;">${text}</div>`;
-            i.value = '';
-            b.scrollTop = b.scrollHeight;
-
-            setTimeout(() => {
-                let reply = "أهلاً بك! أنا مساعد Sturix AI، لقد استفسرت عن: (" + text + "). كيف يمكنني مساعدتك في تطوير تطبيقك؟";
-                if (/^[\d\+\-\*\/\.\(\)\s]+$/.test(text)) {
-                    try { reply = `النتيجة الحسابية لـ (${text}) هي: ${eval(text)} 🧮`; } catch(e) {}
-                } else if (text.includes('مرحباً') || text.includes('السلام')) {
-                    reply = "وعليكم السلام ورحمة الله وبركاته! أنا جاهز تماماً لمساعدتك.";
-                }
-                b.innerHTML += `<div style="background:#111d2e; padding:8px 12px; border-radius:8px; color:#00f2fe; align-self:flex-start;">${reply}</div>`;
-                b.scrollTop = b.scrollHeight;
-            }, 600);
-        }
     </script>
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error)); }
 </script>
-<script src="./extras.js"></script>
+<script src="./ai.js"></script>
 </body>
 </html>
-
