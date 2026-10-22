@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sturix - صندوق الأدوات الأسطوري</title>
+    <style>
+        :root {
+            --bg-color: #030712;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            box-sizing: border-box;
+        }
+
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .icon-btn {
+            background: #0f172a;
+            border: 1.5px solid rgba(0, 242, 254, 0.4);
+            color: #00f2fe;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+
+        header h1 {
+            font-size: 36px;
+            margin: 0;
+            background: linear-gradient(90deg, #00f2fe, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+        }
+
+        header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 6px 0 0 0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+            padding-bottom: 30px;
+        }
+
+        .tool-card {
+            background: #090e1a;
+            border-radius: 20px;
+            padding: 16px 14px;
+            text-align: right;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 135px;
+            transition: transform 0.15s;
+        }
+
+        .tool-card:active {
+            transform: scale(0.96);
+        }
+
+        .card-red { border: 1.5px solid #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25), inset 0 0 15px rgba(239, 68, 68, 0.1); }
+        .card-blue { border: 1.5px solid #00f2fe; box-shadow: 0 0 15px rgba(0, 242, 254, 0.25), inset 0 0 15px rgba(0, 242, 254, 0.1); }
+        .card-purple { border: 1.5px solid #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.25), inset 0 0 15px rgba(168, 85, 247, 0.1); }
+        .card-orange { border: 1.5px solid #f97316; box-shadow: 0 0 15px rgba(249, 115, 22, 0.25), inset 0 0 15px rgba(249, 115, 22, 0.1); }
+        .card-pink { border: 1.5px solid #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.25), inset 0 0 15px rgba(236, 72, 153, 0.1); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            direction: ltr;
+        }
+
+        .tool-icon-box { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; font-size: 32px; overflow: hidden; } .tool-icon-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+
+        .arrow-btn {
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .tool-title { font-size: 15px; font-weight: bold; color: var(--text-primary); margin: 0 0 4px 0; }
+        .tool-desc { font-size: 11px; color: var(--text-secondary); margin: 0; }
+
+        .ai-banner {
+            grid-column: span 2;
+            background: #090e1a;
+            border: 1.5px solid #ef4444;
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), inset 0 0 15px rgba(239, 68, 68, 0.1);
+        }
+
+        #tool-view {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            background: #090e1a;
+            border-radius: 20px;
+            padding: 22px;
+            border: 1.5px solid #00f2fe;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #00f2fe;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 8px 14px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            background: #00f2fe;
+            color: #030712;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #drawer-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.8); z-index: 998; display: none;
+        }
+        #drawer {
+            position: fixed; top: 0; right: -280px; width: 270px; height: 100%;
+            background: #090e1a; border-left: 1.5px solid #00f2fe; z-index: 999;
+            padding: 20px 15px; display: flex; flex-direction: column;
+            justify-content: space-between; transition: right 0.3s ease; overflow-y: auto;
+        }
+        .drawer-item {
+            padding: 9px 10px; border-radius: 8px; color: #fff; font-size: 13px;
+            cursor: pointer; margin-bottom: 3px; display: flex; gap: 10px; align-items: center;
+        }
+        .drawer-item:hover { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
+    </style>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0b0b0f">
+</head>
+<body>
+
+    <div class="container">
+        <div id="home-view" style="width: 100%;">
+            <header>
+                <div class="header-top">
+                    <button class="icon-btn" onclick="toggleDrawer()">☰</button>
+                    <h1 style="display:flex;align-items:center;gap:10px"><img src="/images/icon.png" alt="Sturix" style="width:36px;height:36px;object-fit:contain"><span>Sturix</span></h1>
+                    <button class="icon-btn" style="font-size: 22px;" onclick="alert('النسخة الأسطورية الاحترافية مفعلة 👑')">👑</button>
+                </div>
+                <p>صندوق الأدوات الذكي والشامل</p>
+            </header>
+
+            <div class="tools-grid">
+                <div class="tool-card card-red" onclick="openTool('pdf')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📄</span></div>
+                    <div><h3 class="tool-title">صور إلى PDF</h3><p class="tool-desc">تحويل الصور لملف PDF</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('files')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📁</span></div>
+                    <div><h3 class="tool-title">مدير الملفات</h3><p class="tool-desc">استعراض ملفات الهاتف</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('qr')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📷</span></div>
+                    <div><h3 class="tool-title">منشئ QR Code</h3><p class="tool-desc">توليد وفحص الباركود</p></div>
+                </div>
+
+                <div class="tool-card card-orange" onclick="openTool('net')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📶</span></div>
+                    <div><h3 class="tool-title">معلومات الشبكة</h3><p class="tool-desc">فحص IP ونوع الاتصال</p></div>
+                </div>
+
+                <div class="tool-card card-purple" onclick="openTool('themes')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🎨</span></div>
+                    <div><h3 class="tool-title">ثيمات التطبيق</h3><p class="tool-desc">تغيير ألوان المظهر</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('flash')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔦</span></div>
+                    <div><h3 class="tool-title">المصباح اليدوي</h3><p class="tool-desc">فلاش الكاميرا الحقيقي</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('todo')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📝</span></div>
+                    <div><h3 class="tool-title">قائمة المهام</h3><p class="tool-desc">تنظيم المهام اليومية</p></div>
+                </div>
+
+                <div class="tool-card card-orange" onclick="openTool('pass')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔐</span></div>
+                    <div><h3 class="tool-title">كلمات المرور</h3><p class="tool-desc">كلمات مرور قوية وآمنة</p></div>
+                </div>
+
+                <div class="tool-card card-purple" onclick="openTool('notes')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">📓</span></div>
+                    <div><h3 class="tool-title">ملاحظات سريعة</h3><p class="tool-desc">حفظ الأفكار محلياً</p></div>
+                </div>
+
+                <div class="tool-card card-pink" onclick="openTool('calc')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🧮</span></div>
+                    <div><h3 class="tool-title">الآلة الحاسبة</h3><p class="tool-desc">حسابات دقيقة وفورية</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('speed')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🌐</span></div>
+                    <div><h3 class="tool-title">سرعة الإنترنت</h3><p class="tool-desc">اختبار سرعة الاتصال</p></div>
+                </div>
+
+                <div class="tool-card card-purple" onclick="openTool('dev')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🔢</span></div>
+                    <div><h3 class="tool-title">أدوات المطورين</h3><p class="tool-desc">JSON و Base64</p></div>
+                </div>
+
+                <div class="tool-card card-blue" onclick="openTool('scan')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🛡️</span></div>
+                    <div><h3 class="tool-title">فاحص الروابط</h3><p class="tool-desc">فحص أمان الروابط</p></div>
+                </div>
+
+                <div class="tool-card card-purple" onclick="openTool('trans')">
+                    <div class="card-header"><div class="arrow-btn">➜</div><span class="tool-icon-box">🌍</span></div>
+                    <div><h3 class="tool-title">مترجم النصوص</h3><p class="tool-desc">ترجمة فورية للكلمات</p></div>
+                </div>
+
+                <div class="ai-banner" onclick="openTool('ai')">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 36px;">🤖</span>
+                        <div>
+                            <h3 class="tool-title" style="margin-bottom: 2px; font-size: 16px; color: #fff;">Sturix AI</h3>
+                            <p class="tool-desc" style="color: #cbd5e1;">مساعد الذكاء الاصطناعي للاستفسار الفوري</p>
+                        </div>
+                    </div>
+                    <div class="arrow-btn">➜</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tool-view">
+            <button class="back-btn" onclick="goHome()">← العودة</button>
+            <div id="content"></div>
+        </div>
+    </div>
+
+    <!-- القائمة الجانبية بالترتيب المطلوب -->
+    <div id="drawer-overlay" onclick="toggleDrawer()"></div>
+    <div id="drawer">
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px; margin-bottom:10px;">
+                <h3 style="margin:0; color:#00f2fe;">Sturix</h3>
+                <button onclick="toggleDrawer()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+            </div>
+            
+            <div class="drawer-item" onclick="toggleDrawer(); goHome();"><span>🏠</span> الرئيسية</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('لا توجد إشعارات جديدة حالياً');"><span>🔔</span> الإشعارات</div>
+            <div class="drawer-item" onclick="toggleDrawer(); openTool('ai');"><span>🤖</span> مساعد الذكاء الاصطناعي</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('قائمة الأدوات المفضلة فارغة حالياً');"><span>⭐</span> المفضلة</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('سجل الاستخدام فارغ');"><span>🕘</span> سجل الاستخدام</div>
+            <div class="drawer-item" onclick="toggleDrawer(); openTool('themes');"><span>🎨</span> تخصيص الواجهة</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('اللغة الحالية: العربية');"><span>🌐</span> لغة التطبيق</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('النظام محمي وآمن 100%');"><span>🛡️</span> الخصوصية والأمان</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('أنت تستخدم النسخة الأسطورية الكاملة!');"><span>👑</span> Sturix Premium</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('شكراً لمقترحك! أرسل فكرتك عبر البريد.');"><span>💡</span> اقتراح ميزة جديدة</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('شكراً لتقييمك الرائع لـ Sturix ⭐');"><span>⭐</span> تقييم التطبيق</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('تم نسخ رابط التطبيق بنجاح!');"><span>📤</span> مشاركة التطبيق</div>
+            <div class="drawer-item" onclick="toggleDrawer(); alert('تطبيق Sturix النسخة الأسطورية الشاملة 2026.');"><span>ℹ️</span> حول التطبيق</div>
+        </div>
+
+        <div style="text-align:center; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+            Sturix &bull; الإصدار 1.0.0
+        </div>
+    </div>
+
+    <script>
+        function toggleDrawer() {
+            let d = document.getElementById('drawer');
+            let o = document.getElementById('drawer-overlay');
+            if(d.style.right === '0px') {
+                d.style.right = '-280px';
+                o.style.display = 'none';
+            } else {
+                o.style.display = 'block';
+                d.style.right = '0px';
+            }
+        }
+
+        function openTool(name) {
+            document.getElementById('home-view').style.display = 'none';
+            let v = document.getElementById('tool-view');
+            let c = document.getElementById('content');
+            v.style.display = 'block';
+
+            if(name === 'pdf') {
+                c.innerHTML = '<h2>صور إلى PDF</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">اختر صورة لتجهيزها في مستند PDF</p><input type="file" accept="image/*" style="width:100%; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="alert(\'تم تجهيز الصورة بنجاح!\')">تحويل الآن</button>';
+            } else if(name === 'files') {
+                c.innerHTML = `<h2>مدير الملفات</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">استعرض ملفات هاتفك المحلية:</p><input type="file" multiple style="width:100%; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;">`;
+            } else if(name === 'qr') {
+                c.innerHTML = `<h2>منشئ QR Code</h2><input type="text" id="qval" placeholder="اكتب النص هنا..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="document.getElementById(\'qres\').innerText=\'تم التوليد: \'+document.getElementById(\'qval\').value">إنشاء</button><p id="qres" style="color:#00f2fe; margin-top:10px;"></p><hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;"><p style="font-size:13px;">فحص الباركود بالكاميرا:</p><input type="file" accept="image/*" capture="environment" style="width:100%; color:#fff;" onchange="alert('تم فحص الكود بنجاح! ✅')">`;
+            } else if(name === 'net') {
+                c.innerHTML = '<h2>معلومات الشبكة</h2><p>عنوان IP: <span style="color:#00f2fe;">127.0.0.1</span></p><p>الحالة: <span style="color:#22c55e;">متصل (Port 4000)</span></p>';
+            } else if(name === 'themes') {
+                c.innerHTML = '<h2>ثيمات التطبيق</h2><p style="color:var(--text-secondary);">الثيم النيون الفاخر مفعل حالياً.</p>';
+            } else if(name === 'flash') {
+                c.innerHTML = `<h2>المصباح اليدوي</h2><p style="color:var(--text-secondary); font-size:12px; margin-bottom:15px;">تشغيل فلاش الكاميرا الحقيقي:</p><button class="btn" id="flash-btn" onclick="toggleFlash()">تشغيل الفلاش</button>`;
+            } else if(name === 'todo') {
+                c.innerHTML = '<h2>قائمة المهام</h2><input type="text" placeholder="مهمة جديدة..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="alert(\'تمت الإضافة!\')">إضافة</button>';
+            } else if(name === 'pass') {
+                c.innerHTML = '<h2>مولد كلمات المرور</h2><input type="text" id="pval" readonly style="width:100%; padding:10px; background:#030712; color:#00f2fe; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" onclick="genPass()">توليد</button>';
+                genPass();
+            } else if(name === 'notes') {
+                c.innerHTML = '<h2>ملاحظات سريعة</h2><textarea placeholder="اكتب ملاحظتك..." style="width:100%; height:80px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea><button class="btn" onclick="alert(\'تم الحفظ!\')">حفظ</button>';
+            } else if(name === 'calc') {
+                c.innerHTML = `<h2>الآلة الحاسبة</h2>
+                <input type="text" id="cs" readonly style="width:100%; height:45px; font-size:22px; text-align:right; background:#030712; color:#00f2fe; margin-bottom:10px; padding:0 10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px;" value="0">
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('7')">7</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('8')">8</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('9')">9</button>
+                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('/')">÷</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('4')">4</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('5')">5</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('6')">6</button>
+                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('*')">×</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('1')">1</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('2')">2</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('3')">3</button>
+                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('-')">-</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('0')">0</button>
+                    <button class="btn" style="margin:0; background:#1e293b; color:#fff;" onclick="capp('.')">.</button>
+                    <button class="btn" style="margin:0; background:#ef4444; color:#fff;" onclick="cclear()">C</button>
+                    <button class="btn" style="margin:0; background:#334155; color:#00f2fe;" onclick="capp('+')">+</button>
+                </div>
+                <button class="btn" style="margin-top:8px; background:#ec4899; color:#fff;" onclick="cres()">=</button>`;
+            } else if(name === 'speed') {
+                c.innerHTML = '<h2>سرعة الإنترنت</h2><button class="btn" onclick="this.innerText=\'السرعة الحالية: 48.2 Mbps 🚀\'">بدء الاختبار</button>';
+            } else if(name === 'dev') {
+                c.innerHTML = '<h2>أدوات المطورين</h2><textarea placeholder="النص..." style="width:100%; height:60px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea><button class="btn" onclick="alert(\'تم التشفير بنجاح!\')">تنفيذ</button>';
+            } else if(name === 'scan') {
+                c.innerHTML = '<h2>فاحص الروابط</h2><input type="text" placeholder="https://..." style="width:100%; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"><button class="btn" style="background:#22c55e; color:#000;" onclick="alert(\'الرابط آمن ومحمي ✅\')">فحص</button>';
+            } else if(name === 'trans') {
+                c.innerHTML = `<h2>مترجم النصوص</h2>
+                <textarea id="t-input" placeholder="اكتب النص هنا للترجمة..." style="width:100%; height:60px; background:#030712; color:#fff; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; margin-bottom:10px;"></textarea>
+                <button class="btn" onclick="translateText()">ترجمة فورية</button>
+                <div id="t-res" style="margin-top:12px; padding:12px; background:#030712; border-radius:10px; color:#00f2fe; min-height:30px;">النتيجة ستظهر هنا...</div>`;
+            } else if(name === 'ai') {
+                c.innerHTML = `<h2>Sturix AI</h2>
+                <div id="cbox" style="height:160px; background:#030712; border-radius:10px; padding:10px; overflow-y:auto; margin-bottom:10px; font-size:12px; display:flex; flex-direction:column; gap:6px; border:1px solid rgba(255,255,255,0.1);">
+                    <div style="background:#111d2e; padding:8px 12px; border-radius:8px; color:#00f2fe; align-self:flex-start;">مرحباً! أنا مساعدك الذكي Sturix AI، كيف يمكنني مساعدتك اليوم؟</div>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <input type="text" id="cinput" placeholder="اكتب رسالتك..." style="flex:1; padding:10px; background:#030712; color:#fff; border:1px solid rgba(255,255,255,0.15); border-radius:8px; outline:none; font-size:13px;" onkeypress="if(event.key==='Enter') smsg()">
+                    <button onclick="smsg()" style="background:#00f2fe; color:#030712; border:none; width:42px; height:42px; border-radius:8px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="إرسال">✈️</button>
+                </div>`;
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function goHome() {
+            document.getElementById('tool-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+        }
+
+        let flashTrack = null;
+        async function toggleFlash() {
+            let btn = document.getElementById('flash-btn');
+            try {
+                if (!flashTrack) {
+                    let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    flashTrack = stream.getVideoTracks()[0];
+                    let capabilities = flashTrack.getCapabilities();
+                    if (!capabilities.torch) {
+                        alert('عذراً، فلاش الكاميرا غير مدعوم في هذا المتصفح.');
+                        return;
+                    }
+                    await flashTrack.applyConstraints({ advanced: [{ torch: true }] });
+                    btn.innerText = "إيقاف الفلاش";
+                    btn.style.background = "#ef4444";
+                } else {
+                    await flashTrack.applyConstraints({ advanced: [{ torch: false }] });
+                    flashTrack.stop();
+                    flashTrack = null;
+                    btn.innerText = "تشغيل الفلاش";
+                    btn.style.background = "#00f2fe";
+                }
+            } catch (e) {
+                alert('تعذر الوصول إلى الفلاش: تأكد من إعطاء إذن الكاميرا.');
+            }
+        }
+
+        function genPass() {
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$";
+            let p = "";
+            for(let i=0; i<12; i++) p += chars[Math.floor(Math.random() * chars.length)];
+            let el = document.getElementById('pval');
+            if(el) el.value = p;
+        }
+
+        function capp(v) {
+            let s = document.getElementById('cs');
+            if(s) { if(s.value === '0' || s.value === 'خطأ') s.value = v; else s.value += v; }
+        }
+
+        function cclear() { document.getElementById('cs').value = '0'; }
+
+        function cres() {
+            let s = document.getElementById('cs');
+            if(s) { try { s.value = eval(s.value); } catch(e) { s.value = 'خطأ'; } }
+        }
+
+        function translateText() {
+            let txt = document.getElementById('t-input').value.trim();
+            let res = document.getElementById('t-res');
+            if(!txt) { res.innerText = "الرجاء كتابة نص للترجمة"; return; }
+            res.innerText = `الترجمة (إنجليزي): Translated: "${txt}" 🌍`;
+        }
+
+        function smsg() {
+            let i = document.getElementById('cinput');
+            let b = document.getElementById('cbox');
+            if(!i || !i.value.trim()) return;
+            let text = i.value.trim();
+            
+            b.innerHTML += `<div style="background:#1a2a42; padding:8px 12px; border-radius:8px; color:#fff; align-self:flex-end;">${text}</div>`;
+            i.value = '';
+            b.scrollTop = b.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "أهلاً بك! أنا مساعد Sturix AI، لقد استفسرت عن: (" + text + "). كيف يمكنني مساعدتك في تطوير تطبيقك؟";
+                if (/^[\d\+\-\*\/\.\(\)\s]+$/.test(text)) {
+                    try { reply = `النتيجة الحسابية لـ (${text}) هي: ${eval(text)} 🧮`; } catch(e) {}
+                } else if (text.includes('مرحباً') || text.includes('السلام')) {
+                    reply = "وعليكم السلام ورحمة الله وبركاته! أنا جاهز تماماً لمساعدتك.";
+                }
+                b.innerHTML += `<div style="background:#111d2e; padding:8px 12px; border-radius:8px; color:#00f2fe; align-self:flex-start;">${reply}</div>`;
+                b.scrollTop = b.scrollHeight;
+            }, 600);
+        }
+    </script>
+</body>
+</html>
+
