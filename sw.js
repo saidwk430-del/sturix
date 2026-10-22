@@ -1,8 +1,9 @@
-const CACHE_NAME = 'sturix-v3';
+const CACHE_NAME = 'sturix-v4';
 const APP_FILES = [
   './',
   './index.html',
   './manifest.json',
+  './extras.js',
   './images/icon.png'
 ];
 
