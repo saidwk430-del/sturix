@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sturix-v6';
+const CACHE_NAME = 'sturix-v7';
 const APP_FILES = [
   './',
   './index.html',
